@@ -9,3 +9,4 @@ thiserror = "1.0"
 
 [lib]
 name = "mime"
+path = "src/lib.rs"
