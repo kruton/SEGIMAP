@@ -1,0 +1,20 @@
+version: 2
+updates:
+
+  - package-ecosystem: "cargo"
+    directory: "/core" # Location of package manifests
+    schedule:
+      interval: "daily"
+    assignees: kruton
+
+  - package-ecosystem: "cargo"
+    directory: "/mime" # Location of package manifests
+    schedule:
+      interval: "daily"
+    assignees: kruton
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees: kruton
