@@ -4,26 +4,12 @@
 #![cfg_attr(feature = "clippy", feature(plugin))]
 #![cfg_attr(feature = "clippy", plugin(clippy))]
 
-extern crate bufstream;
-extern crate crypto;
-extern crate env_logger;
 #[macro_use]
 extern crate log;
-extern crate mime;
 #[macro_use]
 extern crate nom;
-extern crate num;
-extern crate openssl;
-extern crate rand;
-extern crate regex;
-extern crate serde;
 #[macro_use]
 extern crate serde_derive;
-extern crate serde_json;
-extern crate thiserror;
-extern crate time;
-extern crate toml;
-extern crate walkdir;
 
 use crate::server::{imap_serve, lmtp_serve, Server};
 

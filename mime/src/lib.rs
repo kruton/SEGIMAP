@@ -1,5 +1,3 @@
-extern crate thiserror;
-
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::Read;
@@ -28,6 +26,7 @@ pub struct Message {
     headers: HashMap<String, String>,
 
     // contains the MIME Parts (if more than one) of the message
+    #[allow(unused)]
     body: Vec<MIMEPart>,
 
     // size stored in case FETCH asks for it
@@ -43,7 +42,9 @@ pub struct Message {
 /// Representation of a MIME message part
 #[derive(Debug, Clone)]
 struct MIMEPart {
+    #[allow(unused)]
     mime_header: String,
+    #[allow(unused)]
     mime_body: String,
 }
 
