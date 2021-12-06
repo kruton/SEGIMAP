@@ -1,3 +1,4 @@
 /.git/
-/target/
+/core/target/
+/mime/target/
 Dockerfile
