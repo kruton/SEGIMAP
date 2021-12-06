@@ -4,10 +4,9 @@ use std::io::{BufRead, Write};
 use std::net::TcpStream;
 use std::path::Path;
 use std::sync::Arc;
+use std::time::{SystemTime, UNIX_EPOCH};
 
 use bufstream::BufStream;
-use num::ToPrimitive;
-use time;
 
 use crate::server::user::{Email, User};
 use crate::server::Server;
@@ -55,10 +54,10 @@ impl<'a> Lmtp<'a> {
         }
         let mut res = String::new();
         for rcpt in &self.to_path {
-            let mut timestamp = match time::get_time().sec.to_i32() {
-                Some(i) => i,
-                None => {
-                    res.push_str("555 Unix 2038 error\r\n");
+            let mut timestamp = match SystemTime::now().duration_since(UNIX_EPOCH) {
+                Ok(x) => x.as_secs(),
+                Err(_) => {
+                    res.push_str("555 UNIX time error\r\n");
                     break;
                 }
             };

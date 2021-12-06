@@ -1,3 +1,4 @@
+use chrono::{Datelike, NaiveDateTime, Timelike};
 use std::collections::HashSet;
 use std::fs;
 use std::path::Path;
@@ -14,9 +15,6 @@ use crate::command::RFC822Attribute::{AllRFC822, HeaderRFC822, SizeRFC822, TextR
 use crate::error::{Error, ImapResult};
 
 use mime::Message as MIME_Message;
-
-use time;
-use time::Timespec;
 
 /// Representation of a message flag
 #[derive(Eq, PartialEq, Hash, Debug, Clone)]
@@ -320,13 +318,9 @@ impl Message {
 
     fn date_received(&self) -> String {
         // Retrieve the date received from the UID.
-        let date_received = Timespec {
-            sec: self.uid as i64,
-            nsec: 0i32,
-        };
-        let date_received_tm = time::at_utc(date_received);
+        let date_received = NaiveDateTime::from_timestamp(self.uid as i64, 0);
 
-        let month = match date_received_tm.tm_mon {
+        let month = match date_received.month() {
             0 => "Jan",
             1 => "Feb",
             2 => "Mar",
@@ -345,12 +339,12 @@ impl Message {
 
         format!(
             "{:0>2}-{}-{:0>2} {:0>2}:{:0>2}:{:0>2} -0000",
-            date_received_tm.tm_mday,
+            date_received.day(),
             month,
-            date_received_tm.tm_year + 1900i32,
-            date_received_tm.tm_hour,
-            date_received_tm.tm_min,
-            date_received_tm.tm_sec
+            date_received.year(),
+            date_received.hour(),
+            date_received.minute(),
+            date_received.second()
         )
     }
 }
