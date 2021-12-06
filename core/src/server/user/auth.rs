@@ -1,7 +1,9 @@
 // Use OsRng to ensure that the randomly generated data is cryptographically
 // secure.
+use rand::distributions::Alphanumeric;
 use rand::os::OsRng;
 use rand::Rng;
+use std::iter;
 
 // Use bcrypt for the hashing algorithm to ensure that the outputted data is
 // cryptograpically secure and difficult to crack, even if the authentication
@@ -53,10 +55,10 @@ fn gen_salt() -> Vec<u8> {
         Err(e) => panic!("Failed to create secure Rng: {}", e),
     };
     // Generate the salt from a set of random ascii characters.
-    let mut salt = String::new();
-    for n in rng.gen_ascii_chars().take(16) {
-        salt.push(n);
-    }
+    let salt: String = iter::repeat(())
+        .map(|()| rng.sample(Alphanumeric))
+        .take(16)
+        .collect();
     // Convert the salt into bytes for hashing.
     salt.into_bytes()
 }

@@ -55,7 +55,7 @@ fn listen_imap(v: TcpListener, serv: Arc<Server>) {
 }
 
 fn main() {
-    let _ = env_logger::init().unwrap();
+    env_logger::init();
     info!("Application started");
 
     // Create the server. We wrap it so that it is atomically reference

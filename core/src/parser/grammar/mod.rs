@@ -1,4 +1,4 @@
-use nom::{crlf, Slice};
+use nom::crlf;
 use std::str;
 
 pub use self::fetch::fetch;
