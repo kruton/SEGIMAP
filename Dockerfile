@@ -41,4 +41,8 @@ FROM scratch
 LABEL org.opencontainers.image.source https://github.com/kruton/segimap
 COPY --from=build /home/segimap/core/target/x86_64-unknown-linux-musl/release/segimap ./
 USER 1000
+ENV RUST_LOG=debug
+EXPOSE 3000/tcp
+EXPOSE 10000/tcp
+EXPOSE 10001/tcp
 ENTRYPOINT ["./segimap"]

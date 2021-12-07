@@ -3,6 +3,7 @@ use openssl::error::ErrorStack;
 use openssl::pkcs12::Pkcs12;
 use openssl::ssl::{SslAcceptor, SslMethod};
 use openssl::x509::X509;
+use std::env;
 use std::fs::File;
 use std::io::{Error as IoError, Read, Write};
 use std::path::Path;
@@ -50,7 +51,13 @@ pub struct Config {
 
 impl Config {
     pub fn new() -> ImapResult<Config> {
-        let path = Path::new("./config.toml");
+        let config_dir = match env::var("SEGIMAP_CONFIG_DIR") {
+            Ok(val) => val,
+            Err(_e) => ".".to_string(),
+        };
+
+        let config_file = format!("{}/config.toml", config_dir);
+        let path = Path::new(&config_file);
 
         let config = match File::open(&path) {
             Ok(mut file) => {
@@ -61,20 +68,20 @@ impl Config {
                         Err(e) => {
                             // Use default values if parsing failed.
                             warn!("Failed to parse config.toml.\nUsing default values: {}", e);
-                            Config::default()
+                            Config::default(&config_dir)
                         }
                     },
                     Err(e) => {
                         // Use default values if reading failed.
                         warn!("Failed to read config.toml.\nUsing default values: {}", e);
-                        Config::default()
+                        Config::default(&config_dir)
                     }
                 }
             }
             Err(e) => {
                 // Create a default config file if it doesn't exist
                 warn!("Failed to open config.toml; creating from defaults: {}", e);
-                let config = Config::default();
+                let config = Config::default(&config_dir);
                 let encoded = toml::to_string(&config)?;
                 let mut file = File::create(&path)?;
                 file.write_all(encoded.as_bytes())?;
@@ -103,17 +110,17 @@ impl Config {
         }
         Ok(builder.build())
     }
-}
 
-impl Default for Config {
-    fn default() -> Self {
+    fn default(directory: &String) -> Self {
+        let users_file = format!("{}/users.json", directory);
+
         Config {
             host: "127.0.0.1".to_string(),
             lmtp_port: Some(3000),
             imap_port: Some(10000),
             lmtp_ssl_port: None,
             imap_ssl_port: Some(10001),
-            users: "./users.json".to_string(),
+            users: users_file,
             pkcs_file: String::new(),
             pkcs_pass: String::new(),
         }
