@@ -1,10 +1,14 @@
 SEGIMAP
 =======
 
+This is a continuation of the upstream SEGIMAP server. Unfortunately it seems upstream might be abandoned, so this repo is trying to modernize it enough to run in a Docker container.
+
+[![Docker image build](https://github.com/kruton/segimap/actions/workflows/docker.yml/badge.svg)](https://github.com/kruton/segimap/actions/workflows/docker.yml)
+
+Original description
+--------------------
 This is an IMAP server implementation written in Rust. It originally started out as a class project in Fall 2014.
 There is also an LMTP server attached so that SMTP servers may deliver mail without modifying the maildir themselves.
-
-[![Travis CI status](https://travis-ci.org/uiri/SEGIMAP.svg?branch=master)](https://travis-ci.org/uiri/SEGIMAP)
 
 Some notes about Rust
 ---------------------
