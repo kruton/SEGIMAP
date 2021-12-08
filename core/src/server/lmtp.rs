@@ -64,19 +64,23 @@ impl<'a> Lmtp<'a> {
             let maildir = rcpt.maildir.clone();
             let newdir_path = Path::new(&maildir[..]).join("new");
             loop {
-                match File::create(&newdir_path.join(timestamp.to_string())) {
+                let file_path = &newdir_path.join(timestamp.to_string());
+                match File::create(&file_path) {
                     Err(e) => {
                         if e.kind() == AlreadyExists {
                             timestamp += 1;
                         } else {
+                            warn!("Error creating file '{}': {}", file_path.to_str().unwrap_or_default(), e);
                             delivery_ioerror!(res);
                         }
                     }
                     Ok(mut file) => {
                         if file.write(self.data.as_bytes()).is_err() {
+                            warn!("Error creating file '{}': cannot write file", file_path.to_str().unwrap_or_default());
                             delivery_ioerror!(res);
                         }
                         if file.flush().is_err() {
+                            warn!("Error creating file '{}': cannot flush", file_path.to_str().unwrap_or_default());
                             delivery_ioerror!(res);
                         }
                         res.push_str("250 OK\r\n");
