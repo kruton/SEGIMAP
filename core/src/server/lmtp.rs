@@ -146,7 +146,6 @@ pub fn serve(serv: Arc<Server>, mut stream: BufStream<TcpStream>) {
                 let trimmed_command = (&command[..]).trim();
                 let mut args = trimmed_command.split(' ');
                 let invalid = "500 Invalid command\r\n".to_string();
-                let no_such_user = "550 No such user".to_string();
                 let data_res = b"354 Start mail input; end with <CRLF>.<CRLF>";
                 let ok_res = OK.to_string();
                 let res = match args.next() {
@@ -182,7 +181,7 @@ pub fn serve(serv: Arc<Server>, mut stream: BufStream<TcpStream>) {
                                 _ => match grab_email(args.next()) {
                                     None => invalid,
                                     Some(email) => match serv.users.get(&email) {
-                                        None => no_such_user,
+                                        None => format!("550 No such user {}\r\n", email),
                                         Some(user) => {
                                             l.to_path.push(user);
                                             ok_res
@@ -232,5 +231,20 @@ pub fn serve(serv: Arc<Server>, mut stream: BufStream<TcpStream>) {
                 break;
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_grab_email() {
+        let email = Some("to:<user@example.com>");
+        let parsed_email = grab_email(email);
+        assert!(parsed_email.is_some());
+        let userhost = parsed_email.unwrap();
+        assert_eq!(userhost.local_part, "user");
+        assert_eq!(userhost.domain_part, "example.com");
     }
 }
