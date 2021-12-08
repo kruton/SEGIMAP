@@ -243,12 +243,29 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_grab_email() {
+    fn test_grab_email_to() {
         let email = Some("to:<user@example.com>");
         let parsed_email = grab_email(email);
         assert!(parsed_email.is_some());
         let userhost = parsed_email.unwrap();
         assert_eq!(userhost.local_part, "user");
         assert_eq!(userhost.domain_part, "example.com");
+    }
+
+    #[test]
+    fn test_grab_email_from() {
+        let email = Some("from:<user1@example.com>");
+        let parsed_email = grab_email(email);
+        assert!(parsed_email.is_some());
+        let userhost = parsed_email.unwrap();
+        assert_eq!(userhost.local_part, "user1");
+        assert_eq!(userhost.domain_part, "example.com");
+    }
+
+    #[test]
+    fn test_grab_email_raw_email_failure() {
+        let email = Some("user1@example.com");
+        let parsed_email = grab_email(email);
+        assert!(parsed_email.is_none());
     }
 }
