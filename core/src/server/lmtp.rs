@@ -146,7 +146,7 @@ pub fn serve(serv: Arc<Server>, mut stream: BufStream<TcpStream>) {
                 let trimmed_command = (&command[..]).trim();
                 let mut args = trimmed_command.split(' ');
                 let invalid = "500 Invalid command\r\n".to_string();
-                let data_res = b"354 Start mail input; end with <CRLF>.<CRLF>";
+                let data_res = b"354 Start mail input; end with <CRLF>.<CRLF>\r\n";
                 let ok_res = OK.to_string();
                 let res = match args.next() {
                     Some(cmd) => {
